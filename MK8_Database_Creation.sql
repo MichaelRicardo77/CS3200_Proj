@@ -7992,3 +7992,40 @@ LEFT JOIN Player p ON c.country_id = p.country_id
 LEFT JOIN WR_150CC wr ON p.player_id = wr.player_id
 GROUP BY c.country_id
 HAVING total_wrs > 0;
+
+CREATE TABLE Player_Ranking (
+	player_ranking_id INT PRIMARY KEY AUTO_INCREMENT,
+    player_id INT NOT NULL,
+	CONSTRAINT player_ranking_player_id FOREIGN KEY (player_id) 
+		REFERENCES Player(player_id)
+		ON DELETE CASCADE
+		ON UPDATE CASCADE,
+    country_id INT NOT NULL,
+	CONSTRAINT player_ranking_country FOREIGN KEY (country_id) 
+		REFERENCES Country(country_id)
+		ON DELETE CASCADE
+		ON UPDATE CASCADE,
+	unique_tracks_wrs INT,
+    current_wrs INT,
+    total_duration_days INT,
+    days_with_wrs INT
+);
+
+INSERT INTO Player_Ranking (player_id, country_id, unique_tracks_wrs, current_wrs, total_duration_days, days_with_wrs)
+SELECT 
+    p.player_id,
+    p.country_id,
+    COUNT(DISTINCT wr.track_id) AS unique_tracks_wrs,
+    COUNT(DISTINCT CASE 
+        WHEN wr.date_set = (
+            SELECT MAX(wr2.date_set) 
+            FROM WR_150CC wr2 
+            WHERE wr2.track_id = wr.track_id
+        ) THEN wr.track_id 
+    END) AS current_wrs,
+    SUM(wr.duration_days) AS total_duration_days,
+    SUM(CASE WHEN wr.duration_days > 0 THEN 1 ELSE 0 END) AS days_with_wrs
+FROM Player p
+LEFT JOIN WR_150CC wr ON p.player_id = wr.player_id
+GROUP BY p.player_id, p.country_id
+HAVING unique_tracks_wrs > 0; 
