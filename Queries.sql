@@ -1,5 +1,6 @@
 USE mario_kart_8_world_records;
 
+-- QUERY 1
 -- My favorite kart is the Teddy Buggy (Kart id 38). 
 -- I want to see what country has the most world records with this Kart.
 SELECT c.country_name, COUNT(*) AS teddy_buggy_wrs
@@ -14,7 +15,7 @@ Findings:
 - I am surprised that the US is only 6th with Teddy Buggy, behind unexpected countries like Netherlands and Aus.
 */
 
-
+-- QUERY 2
 -- I want to optimize my mushroom (shroom) usage.
 -- I most commonly play players from the United States (id 185) and Canada (id 31)
 -- I want to know what shroom pattern is most common in world records from those countries.
@@ -36,7 +37,7 @@ Findings:
 - I also would have expected some WR's to be set wit 3 shrooms on one lap, but the US has none.
 */
 
-
+-- QUERY 3
 -- I wonder if any players have carried their country's world record contributions.
 -- I want to find which players contribute the largest percentage of their country’s WR's
 SELECT DISTINCT
